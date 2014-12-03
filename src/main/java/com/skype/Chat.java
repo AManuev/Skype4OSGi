@@ -93,7 +93,7 @@ public final class Chat extends SkypeObject {
     	 * MULTI_SUBSCRIBED - participant in chat
     	 * UNSUBSCRIBED - left chat 
     	 */
-        DIALOG, LEGACY_DIALOG, MULTI_SUBSCRIBED, UNSUBSCRIBED;
+        DIALOG, LEGACY_DIALOG, MULTI_SUBSCRIBED, UNSUBSCRIBED
     }
 
     /**
@@ -359,7 +359,7 @@ public final class Chat extends SkypeObject {
         return Boolean.parseBoolean(getProperty("BOOKMARKED"));
     }
     
-    List<ChatListener> instanceChatListeners = new ArrayList<ChatListener>();
+    final List<ChatListener> instanceChatListeners = new ArrayList<>();
     public void addListener(ChatListener listener) throws SkypeException
     {
     	if (localListener == null)

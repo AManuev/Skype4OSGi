@@ -32,6 +32,7 @@ import com.skype.connector.ConnectorException;
  * Implementation of the connector for Linux
  */
 public final class LinuxConnector extends Connector {
+
     private static LinuxConnector _instance = null;
     
     /**
@@ -67,6 +68,7 @@ public final class LinuxConnector extends Connector {
      * @return the absolute path of Skype.
      */
     public String getInstalledPath() {
+        //TODO: get path to Skype
         File application = new File("/usr/bin/skype");
         if (application.exists()) {
             return application.getAbsolutePath();
@@ -90,6 +92,7 @@ public final class LinuxConnector extends Connector {
      * @throws ConnectorException when connection can not be established.
      */
     protected Status connect(int timeout) throws ConnectorException {
+
         if (!SkypeFramework.isRunning()) {
             setStatus(Status.NOT_RUNNING);
             return getStatus();
@@ -112,10 +115,13 @@ public final class LinuxConnector extends Connector {
             SkypeFramework.sendCommand("NAME " + getApplicationName());
             String result = queue.take();
             SkypeFramework.removeSkypeFrameworkListener(initListener);
+
             if ("OK".equals(result)) {
                 setStatus(Status.ATTACHED);
+
             } else if ("CONNSTATUS OFFLINE".equals(result)) {
                 setStatus(Status.NOT_AVAILABLE);
+
             } else if ("ERROR 68".equals(result)) {
                 setStatus(Status.REFUSED);
             }

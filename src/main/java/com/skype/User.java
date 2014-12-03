@@ -207,7 +207,7 @@ public class User extends SkypeObject {
          * The <code>INVISIBLE</code> current user is invisible to others.
          * The <code>LOGGEDOUT</code> current user is logged out. Clients are detached.
          */
-        UNKNOWN, ONLINE, OFFLINE, SKYPEME, AWAY, NA, DND, INVISIBLE, LOGGEDOUT;
+        UNKNOWN, ONLINE, OFFLINE, SKYPEME, AWAY, NA, DND, INVISIBLE, LOGGEDOUT
     }
 
     /**
@@ -220,7 +220,7 @@ public class User extends SkypeObject {
          * The <code>MALE</code> constant indicates the skype user is male.
          * The <code>FEMALE</code> constant indicates the skype user is female.
          */
-        UNKNOWN, MALE, FEMALE;
+        UNKNOWN, MALE, FEMALE
     }
     
     /**
@@ -233,7 +233,7 @@ public class User extends SkypeObject {
          * The <code>PENDING</code> constant indicates the skype user is pending authorisation.
          * The <code>ADDED</code> constant indicates the skype user is added to contact list.
          */
-        NEVER_BEEN, DELETED, PENDING, ADDED;
+        NEVER_BEEN, DELETED, PENDING, ADDED
     }
 
     /** ID of this User. */

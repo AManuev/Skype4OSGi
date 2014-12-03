@@ -80,7 +80,7 @@ public final class FileTransfer extends SkypeObject {
         /**
          * The <code>OUTGOING</code> file transfer object from transmitting sidee.
          */
-        OUTGOING;
+        OUTGOING
     }
     
     /**
@@ -137,7 +137,7 @@ public final class FileTransfer extends SkypeObject {
         /**
          * The <code>UNKNOWN</code> constant indicates the skype filetransfer status is unknown.
          */
-        UNKNOWN;
+        UNKNOWN
     }
     
     /**
@@ -183,7 +183,7 @@ public final class FileTransfer extends SkypeObject {
         /**
          * The <code>UNKNOWN</code> constant indicates the skype filetransfer failure reason is unknown.
          */
-        UNKNOWN;
+        UNKNOWN
     }
     
     /**

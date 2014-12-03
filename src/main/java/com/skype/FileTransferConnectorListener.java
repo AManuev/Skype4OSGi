@@ -51,7 +51,7 @@ final class FileTransferConnectorListener extends AbstractConnectorListener {
                     FileTransfer fileTransfer = FileTransfer.getInstance(id, fileTransferListener);
                     fileTransfer.fireFileTransfer(status);
                 } else {
-                    FileTransfer fileTransfer = FileTransfer.getInstance(id);
+                    FileTransfer.getInstance(id);
                 }
                 EXIT:
                 if (status == FileTransfer.Status.COMPLETED || status == FileTransfer.Status.CANCELLED || status == FileTransfer.Status.FAILED){

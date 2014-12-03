@@ -33,7 +33,8 @@ import com.skype.connector.ConnectorListener;
 
 /**
  * Skype information model (not view) class of Skype4Java.
- * Use this class staticly to do model actions (send messages, SMS messages or calls, etc).
+ * Use this class statically to do model actions (send messages, SMS messages or calls, etc).
+ *
  * @see SkypeClient
  * @author Koji Hisano
  */
@@ -45,65 +46,65 @@ public final class Skype {
 
     /** contactList instance. */
     private static ContactList contactList;
-    
+
     /** Profile instance for this Skype session. */
     private static Profile profile;
 
     /** chatMessageListener lock. */
-    private final static Object chatMessageListenerMutex = new Object();
-    
+    private static final Object chatMessageListenerMutex = new Object();
+
     /** chatMessageEditListener lock. */
-    private final static Object chatMessageEditListenerMutext = new Object();
-    
+    private static final Object chatMessageEditListenerMutex = new Object();
+
     /** fileTransferListener lock. */
-    private final static Object fileTransferListenerMutex = new Object();
+    private static final Object fileTransferListenerMutex = new Object();
     /** FILETRANSFER listener. */
     private static FileTransferConnectorListener fileTransferListener;
     /** Collection of listeners. */
-    static List<FileTransferListener> fileTransferListeners = new CopyOnWriteArrayList<FileTransferListener>();
-    
+    static List<FileTransferListener> fileTransferListeners = new CopyOnWriteArrayList<>();
+
     /** userListener lock. */
-    private final static Object userListenerMutex = new Object();
+    private static final Object userListenerMutex = new Object();
     /** USER listener. */
     private static UserConnectorListener userListener;
     /** Collection of listeners. */
-    static List<UserListener> userListeners = new CopyOnWriteArrayList<UserListener>();
-    
+    static List<UserListener> userListeners = new CopyOnWriteArrayList<>();
+
     /** CHATMESSAGE listener. */
     private static ChatMessageConnectorListener chatMessageListener;
     /** Collection of listeners. */
-    static List<ChatMessageListener> chatMessageListeners = new CopyOnWriteArrayList<ChatMessageListener>();
+    static List<ChatMessageListener> chatMessageListeners = new CopyOnWriteArrayList<>();
 
     /** callMonitorListener lock object. */
-    private final static Object callMonitorListenerMutex = new Object();
+    private static final Object callMonitorListenerMutex = new Object();
     /** CALL monitor listener. */
     private static ConnectorListener callMonitorListener;
     /** Collection of all CALL monitor listeners. */
-    static List<CallMonitorListener> callMonitorListeners = new CopyOnWriteArrayList<CallMonitorListener>();
-    
+    static List<CallMonitorListener> callMonitorListeners = new CopyOnWriteArrayList<>();
+
     /** callListener lock object. */
-    private final static Object callListenerMutex = new Object();
+    private static final Object callListenerMutex = new Object();
     /** CALL listener. */
     private static ConnectorListener callListener;
     /** Collection of all CALL listeners. */
-    static List<CallListener> callListeners = new CopyOnWriteArrayList<CallListener>();
+    static List<CallListener> callListeners = new CopyOnWriteArrayList<>();
 
     /** voiceMailListener lock object. */
-    private final static Object voiceMailListenerMutex = new Object();
+    private static final Object voiceMailListenerMutex = new Object();
     /** VOICEMAIL listener. */
     private static ConnectorListener voiceMailListener;
     /** Collection of all VOICEMAIL listeners. */
-    static List<VoiceMailListener> voiceMailListeners = new CopyOnWriteArrayList<VoiceMailListener>();
+    static List<VoiceMailListener> voiceMailListeners = new CopyOnWriteArrayList<>();
 
     /** User threading lock object. */
-    private final static Object userThreadFieldMutex = new Object();
+    private static final Object userThreadFieldMutex = new Object();
     /** User thread. */
     private static Thread userThread;
 
     /** General exception handler. */
     private static SkypeExceptionHandler defaultExceptionHandler = new SkypeExceptionHandler() {
         /** Print the non caught exceptions. */
-    	public void uncaughtExceptionHappened(Throwable e) {
+        public void uncaughtExceptionHappened(Throwable e) {
             e.printStackTrace();
         }
     };
@@ -137,7 +138,7 @@ public final class Skype {
                             } catch (InterruptedException e) {
                             }
                         }
-                    };
+                    }
                 };
                 userThread.start();
             } else if (on && userThread != null) {
@@ -176,7 +177,7 @@ public final class Skype {
      */
     public static boolean isInstalled() {
         String path = getInstalledPath();
-        if(path == null) {
+        if (path == null) {
             return false;
         }
         return new File(path.trim()).exists(); // for Java 1.7.0_40 version
@@ -218,7 +219,7 @@ public final class Skype {
         String response;
         try {
             response = getConnectorInstance().executeWithId(command, responseHeader);
-        } catch(ConnectorException ex) {
+        } catch (ConnectorException ex) {
             Utils.convertToSkypeException(ex);
             return null;
         }
@@ -226,7 +227,7 @@ public final class Skype {
         String data = response.substring(responseHeader.length());
         String[] ids = Utils.convertToArray(data);
         User[] users = new User[ids.length];
-        for(int i = 0; i < ids.length; ++i) {
+        for (int i = 0; i < ids.length; ++i) {
             users[i] = User.getInstance(ids[i]);
         }
         return users;
@@ -356,7 +357,7 @@ public final class Skype {
         Utils.checkNotNull("code", code);
         return submitConfirmationCode(Utils.convertToCommaSeparatedString(numbers), code);
     }
-    
+
     /**
      * Send a SMS confirmation code.
      * An outgoing SMS message from Skype lists the reply-to number as the user's 
@@ -395,7 +396,7 @@ public final class Skype {
      * @param content the message to send.
      * @return The new SMS object.
      * @throws SkypeException when connection has gone bad or ERROR reply.
-     */    
+     */
     public static SMS sendSMS(String number, String content) throws SkypeException {
         Utils.checkNotNull("number", number);
         Utils.checkNotNull("content", content);
@@ -466,7 +467,7 @@ public final class Skype {
             return null;
         }
     }
-    
+
     /**
      * Find all FileTransfer of a certain type.
      * @param type The type to search for.
@@ -499,7 +500,7 @@ public final class Skype {
     public static FileTransfer[] getAllFileTransfers() throws SkypeException {
         return getAllFileTransfers("FILETRANSFERS");
     }
-    
+
     /**
      * Gets the list of all file transfer.
      * @return a list of currently active (ones that are nor COMPLETED, CANCELLED or FAILED) file transfer.
@@ -510,7 +511,7 @@ public final class Skype {
     public static FileTransfer[] getAllActiveFileTransfers() throws SkypeException {
         return getAllFileTransfers("ACTIVEFILETRANSFERS");
     }
-    
+
     /**
      * Leave a voicemail in a other Skype users voicemailbox.
      * @param skypeId The Skype user to leave a voicemail.
@@ -801,7 +802,8 @@ public final class Skype {
      * @throws SkypeException If there is a problem with the connection or state at the Skype client.
      */
     public static void clearCallHistory() throws SkypeException {
-        Utils.executeWithErrorCheck("CLEAR CALLHISTORY ALL"); // in doc, there is without "ALL", but only this works (protocol 5)
+        Utils.executeWithErrorCheck("CLEAR CALLHISTORY ALL"); // in doc, there is without "ALL", but
+                                                              // only this works (protocol 5)
     }
 
     /**
@@ -811,7 +813,7 @@ public final class Skype {
      */
     public static void clearChatHistory() throws SkypeException {
         Utils.executeWithErrorCheck("CLEAR CHATHISTORY");
-    }    
+    }
 
     /**
      * Clears all voice mail history.
@@ -820,7 +822,7 @@ public final class Skype {
      */
     public static void clearVoiceMailHistory() throws SkypeException {
         Utils.executeWithErrorCheck("CLEAR VOICEMAILHISTORY");
-    }    
+    }
 
     /**
      * Return User based on ID.
@@ -831,12 +833,12 @@ public final class Skype {
         return User.getInstance(id);
     }
 
-        /**
-     * Add a listener for CHATMESSAGE events received from the Skype API.
-     * @param listener the Listener to add.
-     * @throws SkypeException when connection has gone bad or ERROR reply.
-     * @see #removeChatMessageListener(ChatMessageListener)
-     */
+    /**
+    * Add a listener for CHATMESSAGE events received from the Skype API.
+    * @param listener the Listener to add.
+    * @throws SkypeException when connection has gone bad or ERROR reply.
+    * @see #removeChatMessageListener(ChatMessageListener)
+    */
     public static void addChatMessageListener(ChatMessageListener listener) throws SkypeException {
         Utils.checkNotNull("listener", listener);
         synchronized (chatMessageListenerMutex) {
@@ -851,7 +853,7 @@ public final class Skype {
             }
         }
     }
-    
+
     /**
      * Remove a listener for CHATMESSAGE events.
      * If the listener is already removed nothing happens.
@@ -876,10 +878,10 @@ public final class Skype {
      * @see #removeChatMessageEditListener(ChatMessageEditListener)
      */
     public static void addChatMessageEditListener(ChatMessageEditListener listener) throws SkypeException {
-    	Utils.checkNotNull("listener", listener);
-        synchronized (chatMessageEditListenerMutext) {
+        Utils.checkNotNull("listener", listener);
+        synchronized (chatMessageEditListenerMutex) {
             if (chatMessageEditConnectorListener == null) {
-            	chatMessageEditConnectorListener = new ChatMessageEditConnectorListener();
+                chatMessageEditConnectorListener = new ChatMessageEditConnectorListener();
                 try {
                     getConnectorInstance().addConnectorListener(chatMessageEditConnectorListener);
                 } catch (ConnectorException e) {
@@ -889,7 +891,7 @@ public final class Skype {
             chatMessageEditConnectorListener.addListener(listener);
         }
     }
-    
+
     /**
      * Remove a listener for CHATMESSAGE with status EDITED_BY events.
      * If the listener is already removed nothing happens.
@@ -897,10 +899,10 @@ public final class Skype {
      * @see #addChatMessageEditListener(ChatMessageEditListener)
      */
     public static void removeChatMessageEditListener(ChatMessageEditListener listener) throws SkypeException {
-    	Utils.checkNotNull("listener", listener);
-        synchronized (chatMessageEditListenerMutext) {
+        Utils.checkNotNull("listener", listener);
+        synchronized (chatMessageEditListenerMutex) {
             if (chatMessageEditConnectorListener != null) {
-            	chatMessageEditConnectorListener.removeListener(listener);
+                chatMessageEditConnectorListener.removeListener(listener);
             }
         }
     }
@@ -934,7 +936,7 @@ public final class Skype {
             }
         }
     }
-    
+
     /**
      * Remove a listener for FILETRANSFER events.
      * If listener is already removed nothing happens.
@@ -945,13 +947,14 @@ public final class Skype {
         synchronized (fileTransferListenerMutex) {
             fileTransferListeners.remove(listener);
             if (fileTransferListeners.isEmpty()) {
-            	if (fileTransferListener != null)
-            		getConnectorInstance().removeConnectorListener(fileTransferListener);
+                if (fileTransferListener != null) {
+                    getConnectorInstance().removeConnectorListener(fileTransferListener);
+                }
                 fileTransferListener = null;
             }
         }
     }
-    
+
     /**
      * Add a listener for USER events received from the Skype API.
      *
@@ -981,7 +984,7 @@ public final class Skype {
             }
         }
     }
-    
+
     /**
      * Remove a listener for USER events.
      * If listener is already removed nothing happens.
@@ -992,8 +995,9 @@ public final class Skype {
         synchronized (userListenerMutex) {
             userListeners.remove(listener);
             if (userListeners.isEmpty()) {
-            	if (userListener != null)
+                if (userListener != null) {
                     getConnectorInstance().removeConnectorListener(userListener);
+                }
                 userListener = null;
             }
         }
@@ -1028,7 +1032,7 @@ public final class Skype {
             }
         }
     }
-    
+
     /**
      * Remove a listener for CALL events.
      * If listener is already removed nothing happens.
@@ -1039,13 +1043,14 @@ public final class Skype {
         synchronized (callMonitorListenerMutex) {
             callMonitorListeners.remove(listener);
             if (callMonitorListeners.isEmpty()) {
-            	if (callMonitorListener != null)
-            		getConnectorInstance().removeConnectorListener(callMonitorListener);
+                if (callMonitorListener != null) {
+                    getConnectorInstance().removeConnectorListener(callMonitorListener);
+                }
                 callMonitorListener = null;
             }
         }
     }
-    
+
     /**
      * Add a listener for CALL events received from the Skype API.
      * @see CallListener
@@ -1056,31 +1061,30 @@ public final class Skype {
     public static void addCallListener(CallListener listener) throws SkypeException {
         Utils.checkNotNull("listener", listener);
         synchronized (callListenerMutex) {
-        	boolean success = false;
-        	try {
-	            callListeners.add(listener);
-	            if (callListener == null) {
-	                callListener = new ConnectorListenerImpl();
-	                try {
-	                    getConnectorInstance().addConnectorListener(callListener);
-	                } catch (ConnectorException e) {
-	                    Utils.convertToSkypeException(e);
-	                }
-	            }
-	            success = true;
-        	}
-        	finally {
-        		if (!success) {
-        			callListeners.remove(listener);
-        		}
-        	}
-        	
+            boolean success = false;
+            try {
+                callListeners.add(listener);
+                if (callListener == null) {
+                    callListener = new ConnectorListenerImpl();
+                    try {
+                        getConnectorInstance().addConnectorListener(callListener);
+                    } catch (ConnectorException e) {
+                        Utils.convertToSkypeException(e);
+                    }
+                }
+                success = true;
+            } finally {
+                if (!success) {
+                    callListeners.remove(listener);
+                }
+            }
+
         }
     }
-    
+
     @Deprecated
     public static boolean isCallListenerRegistered(CallListener listener) {
-    	return callListeners.contains(listener);
+        return callListeners.contains(listener);
     }
 
     /**
@@ -1094,8 +1098,9 @@ public final class Skype {
         synchronized (callListenerMutex) {
             callListeners.remove(listener);
             if (callListeners.isEmpty()) {
-            	if (callListener != null)
-            		getConnectorInstance().removeConnectorListener(callListener);
+                if (callListener != null) {
+                    getConnectorInstance().removeConnectorListener(callListener);
+                }
                 callListener = null;
             }
         }
@@ -1105,7 +1110,6 @@ public final class Skype {
      * Adds a listener for voice mail events received from the Skype API.
      * @param listener the added listener
      * @throws SkypeException if connection is bad or error is returned
-     * @see VoicemaListener
      */
     public static void addVoiceMailListener(VoiceMailListener listener) throws SkypeException {
         Utils.checkNotNull("listener", listener);
@@ -1137,12 +1141,12 @@ public final class Skype {
             }
         }
     }
-    
+
     static final Object chatListenerManagerMutex = new Object();
     static ChatListenerMananager chatListenerManager = null;
 
     public static void addGlobalChatListener(GlobalChatListener listener) throws SkypeException {
-		synchronized (chatListenerManagerMutex ) {
+        synchronized (chatListenerManagerMutex) {
             if (chatListenerManager == null) {
                 chatListenerManager = new ChatListenerMananager();
                 addChatMessageListener(chatListenerManager);
@@ -1150,15 +1154,15 @@ public final class Skype {
             chatListenerManager.addGlobalChatListener(listener);
         }
     }
-	
+
     public static void removeGlobalChatListener(GlobalChatListener listener) {
         synchronized (chatListenerManagerMutex) {
-            if (chatListenerManager != null){
+            if (chatListenerManager != null) {
                 chatListenerManager.removeListener(listener);
             }
         }
     }
-	
+
     static void addGlobalChatListener(GlobalChatListener listener, Chat chat) throws SkypeException {
         addGlobalChatListener(listener);
     }
@@ -1182,19 +1186,21 @@ public final class Skype {
     static void handleUncaughtException(Throwable e) {
         exceptionHandler.uncaughtExceptionHappened(e);
     }
-    
+
     static void setReplacementConnectorInstance(Connector connector) {
-    	replacementConnectorInstance = connector;
+        replacementConnectorInstance = connector;
     }
 
     static Connector replacementConnectorInstance = null;
 
     public static boolean isDebuggingNativeLib;
+
     private static Connector getConnectorInstance() {
-        if (replacementConnectorInstance == null)
+        if (replacementConnectorInstance == null) {
             return Connector.getInstance();
+        }
         return replacementConnectorInstance;
-    }    
+    }
 
     /** 
      * Private constructor.

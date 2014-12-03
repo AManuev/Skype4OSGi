@@ -89,7 +89,7 @@ public final class ChatMessage extends SkypeObject {
     	 * RECEIVED - message has been received.
     	 * READ - message has been read.
     	 */
-        SENDING, SENT, RECEIVED, READ;
+        SENDING, SENT, RECEIVED, READ
     }
 
     /**
@@ -103,7 +103,7 @@ public final class ChatMessage extends SkypeObject {
     	 * ADDED_MUST_BE_AUTHORIZED - recipient accepts messages from authorized users only and sender is not authorized.
     	 * UNSUBSCRIBE - participant left chat.
     	 */
-        USER_NOT_FOUND, USER_INCAPABLE, ADDER_MUST_BE_FRIEND, ADDED_MUST_BE_AUTHORIZED, UNSUBSCRIBE;
+        USER_NOT_FOUND, USER_INCAPABLE, ADDER_MUST_BE_FRIEND, ADDED_MUST_BE_AUTHORIZED, UNSUBSCRIBE
     }
 
     /**

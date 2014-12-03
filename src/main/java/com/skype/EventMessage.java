@@ -38,7 +38,7 @@ public final class EventMessage extends SkypeObject {
     private static final Map<String, EventMessage> eventMessages = Collections.synchronizedMap(new HashMap<String, EventMessage>());
     private static final AtomicInteger eventMessageNumber = new AtomicInteger();
 
-    private static Object eventMessageListenerMutex = new Object();
+    private static final Object eventMessageListenerMutex = new Object();
     private static ConnectorListener eventMessageListener;
 
     static EventMessage getInstance(final String id) {
@@ -97,7 +97,7 @@ public final class EventMessage extends SkypeObject {
                             String id = message.substring("EVENT ".length(), message.length() - " CLICKED".length());
                             EventMessage eventMessage = EventMessage.getInstance(id);
                             if (eventMessage != null) {
-                                EventMessageListener[] listeners = eventMessage.eventMessageListeners.toArray(new EventMessageListener[0]);
+                                EventMessageListener[] listeners = eventMessage.eventMessageListeners.toArray(new EventMessageListener[eventMessage.eventMessageListeners.size()]);
                                 for (EventMessageListener listener : listeners) {
                                     try {
                                         listener.eventMessageClicked();

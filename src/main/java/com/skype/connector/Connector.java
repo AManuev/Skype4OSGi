@@ -47,7 +47,7 @@ public abstract class Connector {
 		 * is no Skype client available to connect to. API_AVAILABLE - Redundant
 		 * of ATTACHED. NOT_RUNNING - Connection can't be established.
 		 */
-		PENDING_AUTHORIZATION, ATTACHED, REFUSED, NOT_AVAILABLE, API_AVAILABLE, NOT_RUNNING;
+		PENDING_AUTHORIZATION, ATTACHED, REFUSED, NOT_AVAILABLE, API_AVAILABLE, NOT_RUNNING
 	}
 
 	/** Singleton instance of this class. */
@@ -61,6 +61,7 @@ public abstract class Connector {
 	 * @return an initialized connection.
 	 */
 	public static synchronized Connector getInstance() {
+
 		if (_instance == null) {
 			String connectorClassName = null;
 			String osName = System.getProperty("os.name");
@@ -294,7 +295,7 @@ public abstract class Connector {
 	 * Sets the status of this connector. After setting, an status changed event
 	 * will be sent to the all listeners.
 	 * 
-	 * @param newValue
+	 * @param newStatus
 	 *            the new status
 	 * @throws NullPointerException
 	 *             if the specified status is null
@@ -340,7 +341,7 @@ public abstract class Connector {
 	 */
 	private ConnectorListener[] toConnectorListenerArray(
 			final List<ConnectorListener> listeners) {
-		return listeners.toArray(new ConnectorListener[0]);
+		return listeners.toArray(new ConnectorListener[listeners.size()]);
 	}
 
 	/**
@@ -553,7 +554,7 @@ public abstract class Connector {
 	  for (int i = ids.length - 1; i >= 0; --i) {
 		String id = ids[i];
 		fireMessageReceived("CHATMESSAGE " + id + " STATUS RECEIVED");
-		String seen_response = execute("SET CHATMESSAGE " + id + " SEEN", "");
+		execute("SET CHATMESSAGE " + id + " SEEN", "");
 	  }
 	}
 

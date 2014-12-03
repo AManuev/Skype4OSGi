@@ -120,7 +120,7 @@ public final class Application extends SkypeObject {
      */
     public String toString() {
         return getName();
-    };
+    }
 
     /**
      * Return the application name.
@@ -311,7 +311,7 @@ public final class Application extends SkypeObject {
                 }
             }
         }
-        return results.toArray(new Stream[0]);
+        return results.toArray(new Stream[results.size()]);
     }
 
     /**
@@ -346,7 +346,8 @@ public final class Application extends SkypeObject {
                     fireConnected(stream);
                 }
             }
-            String[] oldStreamIds = streams.keySet().toArray(new String[0]);
+            Set<String> strings = streams.keySet();
+            String[] oldStreamIds = strings.toArray(new String[strings.size()]);
             NEXT: for(String oldStreamId: oldStreamIds) {
                 for(String newStreamId: newStreamIds) {
                     if(oldStreamId.equals(newStreamId)) {
@@ -367,7 +368,7 @@ public final class Application extends SkypeObject {
     private void fireConnected(final Stream stream) {
         assert stream != null;
         // to prevent ConcurrentModificationException
-        ApplicationListener[] myListeners = this.listeners.toArray(new ApplicationListener[0]);
+        ApplicationListener[] myListeners = this.listeners.toArray(new ApplicationListener[this.listeners.size()]);
         for(ApplicationListener listener: myListeners) {
             try {
                 listener.connected(stream);
@@ -385,7 +386,7 @@ public final class Application extends SkypeObject {
     private void fireDisconnected(final Stream stream) {
         assert stream != null;
         // to prevent ConcurrentModificationException
-        ApplicationListener[] myListeners = this.listeners.toArray(new ApplicationListener[0]);
+        ApplicationListener[] myListeners = this.listeners.toArray(new ApplicationListener[this.listeners.size()]);
         for(ApplicationListener listener: myListeners) {
             try {
                 listener.disconnected(stream);
@@ -513,7 +514,7 @@ public final class Application extends SkypeObject {
                 }
             }
         }
-        return friends.toArray(new Friend[0]);
+        return friends.toArray(new Friend[friends.size()]);
     }
 
     /**

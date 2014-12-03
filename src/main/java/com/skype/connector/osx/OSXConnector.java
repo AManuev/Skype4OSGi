@@ -33,6 +33,7 @@ import com.skype.connector.UnsupportedArchitectureException;
  * Implementation of the connector for Mac OS X.
  */
 public final class OSXConnector extends Connector {
+
     /** Singleton instance. */
     private static OSXConnector _instance = null;
     
@@ -44,12 +45,14 @@ public final class OSXConnector extends Connector {
      */
     public static synchronized Connector getInstance() {
     	String osArch = System.getProperty("os.arch");
+
 		if (osArch.contains("64")) {
     		throw new UnsupportedArchitectureException(
     				"Skype Java Api doesn't support running under 64bit architectures under Mac OSX. " +
     				"You may try running with 'java -d32' if your system has java 32bit installed."
     				);
     	}
+
         if(_instance == null) {
             _instance = new OSXConnector();
             try {
@@ -103,6 +106,7 @@ public final class OSXConnector extends Connector {
      * @return the absolute path of Skype.
      */
     public String getInstalledPath() {
+        //TODO: loading file under MacOs
         File application = new File("/Applications/Skype.app/Contents/MacOS/Skype");
         if (application.exists()) {
             return application.getAbsolutePath();
@@ -124,7 +128,7 @@ public final class OSXConnector extends Connector {
                 public void run() {
                     latch.countDown();
                     SkypeFramework.runApplicationEventLoop();
-                };
+                }
             };
             eventLoop.setDaemon(true);
             eventLoop.start();

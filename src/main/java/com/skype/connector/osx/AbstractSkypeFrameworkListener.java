@@ -22,6 +22,7 @@
 package com.skype.connector.osx;
 
 class AbstractSkypeFrameworkListener implements SkypeFrameworkListener {
+
     public void attachResponse(int attachResponseCode) {
     }
 

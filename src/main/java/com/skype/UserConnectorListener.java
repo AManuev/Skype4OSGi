@@ -84,7 +84,7 @@ public class UserConnectorListener extends AbstractConnectorListener {
                     user.fireIsAuthorizedMonitor(Boolean.valueOf(propertyValue));
                 } 
             } else {
-                User user = User.getInstance(id);
+                User.getInstance(id);
             }
         }
     }

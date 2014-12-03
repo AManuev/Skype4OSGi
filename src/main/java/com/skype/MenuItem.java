@@ -171,7 +171,7 @@ public final class MenuItem {
                             }
                             MenuItem menuItem = MenuItem.getInstance(id);
                             if (menuItem != null) {
-                                MenuItemListener[] listeners = menuItem.menuItemListeners.toArray(new MenuItemListener[0]);
+                                MenuItemListener[] listeners = menuItem.menuItemListeners.toArray(new MenuItemListener[menuItem.menuItemListeners.size()]);
                                 for (MenuItemListener listener : listeners) {
                                     try {
                                         listener.menuItemClicked(new MenuItemClickEvent(MenuItem.this, skypeIds, context, contextIds));

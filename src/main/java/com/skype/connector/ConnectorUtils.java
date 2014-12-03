@@ -24,7 +24,6 @@
 package com.skype.connector;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -40,59 +39,65 @@ import java.util.List;
  * Generic helper methods for all connectors.
  */
 public final class ConnectorUtils {
-    private static List<String> loadedLibraries = new ArrayList<String>();
-    
-	/**
-	 * Check an object if its not null.
-	 * If it is a NullPointerException will be thrown.
-	 * @param name Name of the object, used in the exception message.
-	 * @param value The object to check.
-	 */
-	public static void checkNotNull(String name, Object value) {
+
+    private static final List<String> loadedLibraries = new ArrayList<>();
+
+    /**
+     * Check an object if its not null.
+     * If it is a NullPointerException will be thrown.
+     * @param name Name of the object, used in the exception message.
+     * @param value The object to check.
+     */
+    public static void checkNotNull(String name, Object value) {
         if (value == null) {
             throw new NullPointerException("The " + name + " must not be null.");
         }
     }
 
-	/**
-	 * Will load the given native library, extracting it from the resources if needed
-	 * to a temporary file. This is just a auxiliary method and not to be used outside
-	 * the API.
-	 * 
-	 * @param libraryName
-	 * @throws LoadLibraryException If the file could not be loaded for any reason.
-	 */
+    /**
+     * Will load the given native library, extracting it from the resources if needed
+     * to a temporary file. This is just a auxiliary method and not to be used outside
+     * the API.
+     * 
+     * @param libraryName
+     * @throws LoadLibraryException If the file could not be loaded for any reason.
+     */
     public static void loadLibrary(String libraryName) throws LoadLibraryException {
-        synchronized(loadedLibraries) {
+        // TODO the library should be loaded from OSGi
+
+        synchronized (loadedLibraries) {
             if (loadedLibraries.contains(libraryName)) {
                 return;
             }
-            
+
             try {
                 System.loadLibrary(libraryName);
+
             } catch (UnsatisfiedLinkError err) {
-                String libraryFileName = libraryName;
-                URL url = ConnectorUtils.class.getResource("/" + libraryFileName);
+
+                URL url = ConnectorUtils.class.getResource("/" + libraryName);
+
                 if (url == null) {
-                	throw new IllegalStateException("Library " + libraryFileName + " is not in the resource path! This is a bug!");
+                    throw new IllegalStateException("Library " + libraryName
+                            + " is not in the resource path! This is a bug!");
                 }
                 File libraryFile;
-                if(url.getProtocol().toLowerCase().equals("file")) {
+                if (url.getProtocol().toLowerCase().equals("file")) {
                     try {
                         libraryFile = new File(URLDecoder.decode(url.getPath(), "UTF-8"));
-                    } catch(UnsupportedEncodingException e) {
+                    } catch (UnsupportedEncodingException e) {
                         throw new LoadLibraryException("UTF-8 is not supported encoding.");
                     }
                 } else {
-                    cleanUpOldLibraryFiles(libraryFileName);
-                    libraryFile = createTempLibraryFile(libraryFileName);
+                    cleanUpOldLibraryFiles(libraryName);
+                    libraryFile = createTempLibraryFile(libraryName);
                 }
                 rehydrateFrameworkAtLibraryPath(libraryFile);
-                
+
                 try {
-                    System.load(libraryFile.getAbsolutePath());            
+                    System.load(libraryFile.getAbsolutePath());
                 } catch (UnsatisfiedLinkError e) {
-                    throw new LoadLibraryException("Loading " + libraryFileName + " failed.\n"+e.getMessage());
+                    throw new LoadLibraryException("Loading " + libraryName + " failed.\n" + e.getMessage());
                 }
             }
 
@@ -101,47 +106,44 @@ public final class ConnectorUtils {
     }
 
     private static void rehydrateFrameworkAtLibraryPath(File libraryFile) {
-    	if (!libraryFile.getName().endsWith("jnilib"))
-    		return;
-    	
-    	try {
-	    	File skypeFramework = new File(libraryFile.getCanonicalFile().getParentFile(), "Skype.Framework");
-	    	
-	    	URL skypeFrameworkResourceUrl = ConnectorUtils.class.getResource("/"+"Skype.Framework");
-	    	if(!skypeFramework.getAbsolutePath().equals(skypeFrameworkResourceUrl.getPath())){
-	    		InputStream skypeFrameworkStream = ConnectorUtils.class.getResourceAsStream("/"+"Skype.Framework");
-	    		writeStreamToFile(skypeFrameworkStream, skypeFramework);
-	    	}
-    	}
-    	catch(IOException e) {
-    		throw new IllegalStateException(e);
-    	}
-	}
+        if (!libraryFile.getName().endsWith("jnilib"))
+            return;
 
+        try {
+            File skypeFramework = new File(libraryFile.getCanonicalFile().getParentFile(), "dlls/Skype.Framework");
 
-	private static void writeStreamToFile(InputStream skypeFrameworkStream,
-			File skypeFramework) throws FileNotFoundException,
-			IOException {
-		FileOutputStream out = null;
-		try {
-			out = new FileOutputStream(skypeFramework);
-			int count;
-			byte[] buffer = new byte[1024];
-			while(0 < (count = skypeFrameworkStream.read(buffer))) {
-			    out.write(buffer, 0, count);
-			}
-		}finally
-		{
-			if (out != null) {
-				out.close();
-			}
-		}
-	}
+            URL skypeFrameworkResourceUrl = ConnectorUtils.class.getResource("/" + "dlls/Skype.Framework");
+            if (!skypeFramework.getAbsolutePath().equals(skypeFrameworkResourceUrl.getPath())) {
+                InputStream skypeFrameworkStream = ConnectorUtils.class.getResourceAsStream("/" + "dlls/Skype.Framework");
+                writeStreamToFile(skypeFrameworkStream, skypeFramework);
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-	private static void cleanUpOldLibraryFiles(final String libraryFileName) {
+    private static void writeStreamToFile(InputStream skypeFrameworkStream, File skypeFramework) throws IOException {
+
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(skypeFramework);
+            int count;
+            byte[] buffer = new byte[1024];
+            while (0 < (count = skypeFrameworkStream.read(buffer))) {
+                out.write(buffer, 0, count);
+            }
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
+    }
+
+    private static void cleanUpOldLibraryFiles(final String libraryFileName) {
         final String fileNamePrefix = libraryFileName.substring(0, libraryFileName.indexOf('.'));
         final String extension = libraryFileName.substring(libraryFileName.lastIndexOf('.'));
-        for(File file: new File(System.getProperty("java.io.tmpdir")).listFiles(new FilenameFilter() {
+
+        for (File file : new File(System.getProperty("java.io.tmpdir")).listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return name.startsWith(fileNamePrefix) && name.endsWith(extension);
             }
@@ -152,60 +154,53 @@ public final class ConnectorUtils {
 
     private static File createTempLibraryFile(String libraryFileName) throws LoadLibraryException {
         InputStream in = ConnectorUtils.class.getResourceAsStream("/" + libraryFileName);
-        if(in == null) {
+        if (in == null) {
             throw new LoadLibraryException(libraryFileName + " is not contained in the jar.");
         }
-        FileOutputStream out = null;
+
         try {
             final String fileNamePrefix = libraryFileName.substring(0, libraryFileName.indexOf('.'));
             final String extension = libraryFileName.substring(libraryFileName.lastIndexOf('.'));
             File libraryFile = File.createTempFile(fileNamePrefix, extension);
             libraryFile.deleteOnExit();
             writeStreamToFile(in, libraryFile);
-            
+
             return libraryFile;
-        } catch(IOException e) {
+        } catch (IOException e) {
             throw new LoadLibraryException("Writing " + libraryFileName + " failed.");
         } finally {
             try {
                 in.close();
-            } catch(IOException e) {
-            }
-            if(out != null) {
-                try {
-                    out.close();
-                } catch(IOException e) {
-                }
+            } catch (IOException e) {
             }
         }
     }
-    
-	/**
-	 * The methods of this class should be used staticly.
-	 * That is why the constructor is private.
-	 */
+
+    /**
+     * The methods of this class should be used staticly.
+     * That is why the constructor is private.
+     */
     private ConnectorUtils() {
     }
 
-
     private static String skypeApiTempDir = null;
-	public static String getSkypeTempDir() {
-		if (skypeApiTempDir != null) {
-			if (new File(skypeApiTempDir).exists())
-				return skypeApiTempDir;
-		}
-		
-		
-		File directory = new File(System.getProperty("java.io.tmpdir"));
-		File tempDir;
-		try {
-			tempDir = File.createTempFile("skype-java-api", "", directory);
-			tempDir.delete();
-			tempDir.mkdir();
-			skypeApiTempDir =  tempDir.getCanonicalPath();
-			return skypeApiTempDir;
-		} catch (IOException e) {
-			throw new RuntimeException("Could not create temporary directory to extract required libraries", e);
-		}
-	}
+
+    public static String getSkypeTempDir() {
+        if (skypeApiTempDir != null) {
+            if (new File(skypeApiTempDir).exists())
+                return skypeApiTempDir;
+        }
+
+        File directory = new File(System.getProperty("java.io.tmpdir"));
+        File tempDir;
+        try {
+            tempDir = File.createTempFile("skype-java-api", "", directory);
+            tempDir.delete();
+            tempDir.mkdir();
+            skypeApiTempDir = tempDir.getCanonicalPath();
+            return skypeApiTempDir;
+        } catch (IOException e) {
+            throw new RuntimeException("Could not create temporary directory to extract required libraries", e);
+        }
+    }
 }

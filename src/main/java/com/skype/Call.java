@@ -110,7 +110,7 @@ public final class Call extends SkypeObject {
         FINISHED, MISSED, REFUSED, BUSY, CANCELLED, VM_BUFFERING_GREETING, 
         VM_PLAYING_GREETING, VM_RECORDING, VM_UPLOADING, VM_SENT, VM_CANCELLED, 
         VM_FAILED, TRANSFERRING, TRANSFERRED, LOCALHOLD, REMOTEHOLD, 
-        WAITING_REDIAL_COMMAND, REDIAL_PENDING;
+        WAITING_REDIAL_COMMAND, REDIAL_PENDING
     }
 
     /**
@@ -123,7 +123,7 @@ public final class Call extends SkypeObject {
     	 * INCOMING_P2P - incoming call from P2P.
     	 * OUTGOING_P2P - outgoing call to P2P.
     	 */	 
-        INCOMING_PSTN, OUTGOING_PSTN, INCOMING_P2P, OUTGOING_P2P;
+        INCOMING_PSTN, OUTGOING_PSTN, INCOMING_P2P, OUTGOING_P2P
     }
 
     /**
@@ -173,7 +173,7 @@ public final class Call extends SkypeObject {
     	 * VIDEO_RECV_ENABLED.
     	 * VIDEO_BOTH_ENABLED.
     	 */
-        VIDEO_NONE, VIDEO_SEND_ENABLED, VIDEO_RECV_ENABLED, VIDEO_BOTH_ENABLED;
+        VIDEO_NONE, VIDEO_SEND_ENABLED, VIDEO_RECV_ENABLED, VIDEO_BOTH_ENABLED
     }
     
     /**
@@ -329,7 +329,7 @@ public final class Call extends SkypeObject {
      */
     @Deprecated
     void fireStatusChanged(final Status status) {
-        CallStatusChangedListener[] callListeners = this.listeners.toArray(new CallStatusChangedListener[0]);
+        CallStatusChangedListener[] callListeners = this.listeners.toArray(new CallStatusChangedListener[this.listeners.size()]);
         if (status == oldStatus) {
             return;
         }

@@ -51,7 +51,7 @@ public class CallConnectorListener extends AbstractConnectorListener {
                     Call call = Call.getInstance(id, callMonitorListener);
                     call.fireCallMonitor(status);
                 } else {
-                    Call call = Call.getInstance(id);
+                    Call.getInstance(id);
                 }
                 EXIT:
                 if (status == Call.Status.FINISHED || status == Call.Status.CANCELLED ||

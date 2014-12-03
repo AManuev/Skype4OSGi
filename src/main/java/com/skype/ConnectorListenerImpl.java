@@ -26,7 +26,7 @@ final class ConnectorListenerImpl extends
 						}
 						call.setCallListenerEventFired(true);
 						CallListener[] listeners = Skype.callListeners
-								.toArray(new CallListener[0]);
+								.toArray(new CallListener[Skype.callListeners.size()]);
 						try {
 							switch (call.getType()) {
 							case OUTGOING_P2P:

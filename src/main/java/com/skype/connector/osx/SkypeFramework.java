@@ -28,7 +28,8 @@ import com.skype.connector.ConnectorUtils;
 import com.skype.connector.LoadLibraryException;
 
 final class SkypeFramework {
-    private static Object initializedFieldMutex = new Object();
+
+    private static final Object initializedFieldMutex = new Object();
     private static boolean initialized = false;
     
     private static final List<SkypeFrameworkListener> listeners = new CopyOnWriteArrayList<SkypeFrameworkListener>();
@@ -41,7 +42,7 @@ final class SkypeFramework {
         ConnectorUtils.checkNotNull("applicationName", applicationName);
         synchronized(initializedFieldMutex) {
             if (!initialized) {
-                ConnectorUtils.loadLibrary("libskype.jnilib");  
+                ConnectorUtils.loadLibrary("dlls/libskype.jnilib");
                 setup0(applicationName);
                 initialized = true;                
             }

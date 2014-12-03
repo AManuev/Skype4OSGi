@@ -74,7 +74,7 @@ public final class Profile {
          * The <code>INVISIBLE</code> current user is invisible to others.
          * The <code>LOGGEDOUT</code> current user is logged out. Clients are detached.
          */
-        UNKNOWN, ONLINE, OFFLINE, SKYPEME, AWAY, NA, DND, INVISIBLE, LOGGEDOUT;
+        UNKNOWN, ONLINE, OFFLINE, SKYPEME, AWAY, NA, DND, INVISIBLE, LOGGEDOUT
     }
 
     /**
@@ -88,7 +88,7 @@ public final class Profile {
          * The <code>MALE</code> constant indicates the current user is male.
          * The <code>FEMALE</code> constant indicates the current user is female.
          */
-        UNKNOWN, MALE, FEMALE;
+        UNKNOWN, MALE, FEMALE
     }
 
     /**
@@ -131,7 +131,7 @@ public final class Profile {
         @Override
         public boolean equals(Object compared) {
             if (compared instanceof CallForwardingRule) {
-                return toString().equals(((CallForwardingRule)compared).toString());
+                return toString().equals((compared).toString());
             }
             return false;
         }
@@ -695,7 +695,7 @@ public final class Profile {
      */
     public void setAvatar(final BufferedImage newValue) throws SkypeException {
         if (newValue == null) {
-            setAvatarByFile((File)null);
+            setAvatarByFile(null);
             return;
         }
         try {

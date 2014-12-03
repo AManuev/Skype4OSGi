@@ -80,7 +80,7 @@ public final class VoiceMail extends SkypeObject {
          * CUSTOM_GREETING - partner's recorded custom greeting
          * UNKNOWN - unknown type
          */  
-        INCOMING, OUTGOING, DEFAULT_GREETING, CUSTOM_GREETING, UNKNOWN;
+        INCOMING, OUTGOING, DEFAULT_GREETING, CUSTOM_GREETING, UNKNOWN
     }
     
     /**
@@ -103,7 +103,7 @@ public final class VoiceMail extends SkypeObject {
          * FAILED - downloading voicemail/greeting failed
          * UNKNOWN - unknown status
          */
-        NOTDOWNLOADED, DOWNLOADING, UNPLAYED, BUFFERING, PLAYING, PLAYED, BLANK, RECORDING, RECORDED, UPLOADING, UPLOADED, DELETING, FAILED, UNKNOWN;
+        NOTDOWNLOADED, DOWNLOADING, UNPLAYED, BUFFERING, PLAYING, PLAYED, BLANK, RECORDING, RECORDED, UPLOADING, UPLOADED, DELETING, FAILED, UNKNOWN
     }
     
     /**
@@ -121,7 +121,7 @@ public final class VoiceMail extends SkypeObject {
          * PLAYBACK_ERROR
          * UNKNOWN
          */
-        MISC_ERROR, CONNECT_ERROR, NO_VOICEMAIL_PRIVILEGE, NO_SUCH_VOICEMAIL, FILE_READ_ERROR, FILE_WRITE_ERROR, RECORDING_ERROR, PLAYBACK_ERROR, UNKNOWN;
+        MISC_ERROR, CONNECT_ERROR, NO_VOICEMAIL_PRIVILEGE, NO_SUCH_VOICEMAIL, FILE_READ_ERROR, FILE_WRITE_ERROR, RECORDING_ERROR, PLAYBACK_ERROR, UNKNOWN
     }
 
     /** The ID of this VoiceMail object. */

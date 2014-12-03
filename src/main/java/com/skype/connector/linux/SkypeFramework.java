@@ -32,33 +32,38 @@ import com.skype.connector.ConnectorUtils;
 import com.skype.connector.LoadLibraryException;
 
 final class SkypeFramework {
+
     private static final String SKYPE_API_LINUX_IMPL_PROPERTY = "skype.api.impl";
-	private static Object initializedFieldMutex = new Object();
+
+    private static Object initializedFieldMutex = new Object();
     private static boolean initialized = false;
 
     private static CountDownLatch eventLoopFinishedLatch;
+
     private static Thread eventLoop;
-    private static final List<SkypeFrameworkListener> listeners = new CopyOnWriteArrayList<SkypeFrameworkListener>();
+
+    private static final List<SkypeFrameworkListener> listeners = new CopyOnWriteArrayList<>();
     public static boolean isDebugging;
-    
+
     static void setDebugging(boolean debug) {
-    	isDebugging = true;
+        isDebugging = true;
     }
+
     static boolean isDebugging() {
-    	return isDebugging;
+        return isDebugging;
     }
-    
+
     static void init() throws LoadLibraryException {
-        synchronized(initializedFieldMutex) {
+
+        synchronized (initializedFieldMutex) {
             if (!initialized) {
-            	if (SystemUtils.OS_ARCH.contains("64")) {
-            		ConnectorUtils.loadLibrary(getLibName("x64"));
-            	}
-            	else {
-						ConnectorUtils.loadLibrary(getLibName("x86"));
-            	}
+                if (SystemUtils.OS_ARCH.contains("64")) {
+                    ConnectorUtils.loadLibrary(getLibName("x64"));
+                } else {
+                    ConnectorUtils.loadLibrary(getLibName("x86"));
+                }
                 setup0();
-                
+
                 eventLoopFinishedLatch = new CountDownLatch(1);
                 eventLoop = new Thread(new Runnable() {
                     public void run() {
@@ -68,61 +73,63 @@ final class SkypeFramework {
                 }, "Skype4Java Event Loop");
                 eventLoop.setDaemon(true);
                 eventLoop.start();
-                initialized = true;                
+                initialized = true;
             }
         }
     }
 
-	private static String getLibName(String arch) {
-		String libImpl = System.getProperty(SKYPE_API_LINUX_IMPL_PROPERTY, "dbus");
-		return "libskype_"+libImpl+"_"+arch+".so";
-	}
-    
+    private static String getLibName(String arch) {
+        String libImpl = System.getProperty(SKYPE_API_LINUX_IMPL_PROPERTY, "dbus");
+        return "libskype_" + libImpl + "_" + arch + ".so";
+    }
+
     private static native void setup0();
+
     private static native void runEventLoop0();
-    
+
     static void addSkypeFrameworkListener(SkypeFrameworkListener listener) {
         listeners.add(listener);
     }
-    
+
     static void removeSkypeFrameworkListener(SkypeFrameworkListener listener) {
         listeners.remove(listener);
     }
-    
+
     static boolean isRunning() {
         return isRunning0();
     }
 
     private static native boolean isRunning0();
-    
+
     static void sendCommand(String commandString) {
-        sendCommand0(commandString);            
+        sendCommand0(commandString);
     }
 
     private static native void sendCommand0(String commandString);
-    
+
     static void fireNotificationReceived(String notificationString) {
-        for (SkypeFrameworkListener listener: listeners) {
+        for (SkypeFrameworkListener listener : listeners) {
             listener.notificationReceived(notificationString);
         }
     }
-    
+
     static void dispose() {
-        synchronized(initializedFieldMutex) {
+        synchronized (initializedFieldMutex) {
             if (initialized) {
                 listeners.clear();
                 stopEventLoop0();
                 try {
                     eventLoopFinishedLatch.await();
-                } catch(InterruptedException e) {
+                } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
                 closeDisplay0();
-                initialized = false;                
+                initialized = false;
             }
         }
     }
 
     private static native void stopEventLoop0();
+
     private static native void closeDisplay0();
 }
